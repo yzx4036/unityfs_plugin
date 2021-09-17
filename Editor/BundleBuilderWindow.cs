@@ -14,6 +14,7 @@ namespace UnityFS.Editor
 
     public partial class BundleBuilderWindow : BaseEditorWindow
     {
+        public const string RootPath = "../Release/";
         public const string KeyForPackagePlatforms = ".BundleBuilderWindow.Platforms";
         public const string KeyForTabIndex = ".BundleBuilderWindow.TabIndex";
         public const string KeyForSearchKey = "BundleBuilderWindow._searchKeyword";
@@ -668,7 +669,7 @@ namespace UnityFS.Editor
 
                 if (GUILayout.Button("Build Packages"))
                 {
-                    BundleBuilder.BuildPackages(_data, "", _platform);
+                    BundleBuilder.BuildPackages(_data, RootPath, _platform);
                 }
             }
 

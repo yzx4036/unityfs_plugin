@@ -579,7 +579,6 @@ namespace UnityFS.Utils
                     }
                 }
             }
-
             oncomplete?.Invoke();
         }
 

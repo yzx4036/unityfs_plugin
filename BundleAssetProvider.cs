@@ -91,6 +91,7 @@ namespace UnityFS
             _streamingAssets = new StreamingAssetsLoader();
             _streamingAssets.LoadEmbeddedManifest(streamingAssets =>
             {
+                Debug.Log($">>>>>>>>_localPathRoot {_localPathRoot}");
                 if (args.useBaseManifest)
                 {
                     Helpers.ReadSAManifest(_password, (manifest, fileEntry) =>
@@ -184,6 +185,7 @@ namespace UnityFS
 
         private void SetManifest(Manifest manifest, ManifestEntry fileEntry)
         {
+            Debug.Log($">>>>>>>>>SetManifest, {manifest}");
             _manifestFileEntry = fileEntry;
             _manifestObject = manifest;
             _assetPath2Bundle.Clear();

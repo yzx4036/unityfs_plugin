@@ -333,7 +333,7 @@ namespace UnityFS
             return new UAssets().AddRange(assetPaths);
         }
 
-        public static Utils.PrefabLoader Instantiate(string assetPath)
+        public static Utils.PrefabLoader InstantiateAsync(string assetPath)
         {
             return Utils.PrefabLoader.Load(assetPath);
         }
