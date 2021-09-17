@@ -213,7 +213,7 @@ namespace UnityFS.Utils
         {
             _root = root;
             _capacity = capacity;
-            _asset = ResourceManager.LoadAsset(assetPath, typeof(GameObject));
+            _asset = ResourceManager.LoadAssetAsync(assetPath, typeof(GameObject));
             _asset.completed += onAssetLoaded;
         }
 

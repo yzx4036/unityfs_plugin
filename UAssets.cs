@@ -46,7 +46,7 @@ namespace UnityFS
             for (int i = 0, size = assetPaths.Count; i < size; i++)
             {
                 var assetPath = assetPaths[i];
-                var asset = ResourceManager.LoadAsset(assetPath);
+                var asset = ResourceManager.LoadAssetAsync(assetPath);
                 assets.Add(asset);
                 _assets.Add(asset);
             }

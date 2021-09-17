@@ -79,9 +79,7 @@ namespace UnityFS.Utils
                 case UnityEditor.BuildTarget.WebGL: return "webgl";
                 case UnityEditor.BuildTarget.StandaloneWindows:
                 case UnityEditor.BuildTarget.StandaloneWindows64: return "windows";
-                case UnityEditor.BuildTarget.StandaloneLinux:
                 case UnityEditor.BuildTarget.StandaloneLinux64:
-                case UnityEditor.BuildTarget.StandaloneLinuxUniversal: return "linux";
                 case UnityEditor.BuildTarget.StandaloneOSX: return "osx";
                 case UnityEditor.BuildTarget.WSAPlayer: return "wsa";
                 case UnityEditor.BuildTarget.PS4: return "ps4";

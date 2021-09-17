@@ -55,14 +55,52 @@ namespace UnityFS.Utils
             }
         }
 
+        /// <summary>
+        /// 异步加载
+        /// </summary>
+        /// <param name="assetPath"></param>
+        /// <returns></returns>
+        public static PrefabLoader LoadAsync(string assetPath)
+        {
+            var gameObject = new GameObject("Prefab Loader");
+            var loader = gameObject.AddComponent<PrefabLoader>();
+            loader._LoadAsync(assetPath);
+            return loader;
+        }
+        
+        /// <summary>
+        /// 同步加载
+        /// </summary>
+        /// <param name="assetPath"></param>
+        /// <returns></returns>
         public static PrefabLoader Load(string assetPath)
         {
             var gameObject = new GameObject("Prefab Loader");
             var loader = gameObject.AddComponent<PrefabLoader>();
             loader._Load(assetPath);
+            Debug.Log($">LoadAsync>>loader.target {loader.target}"); 
             return loader;
         }
 
+        /// <summary>
+        /// 异步加载
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="assetPath"></param>
+        /// <returns></returns>
+        public static PrefabLoader LoadAsync(GameObject gameObject, string assetPath)
+        {
+            var loader = gameObject.AddComponent<PrefabLoader>();
+            loader._LoadAsync(assetPath);
+            return loader;
+        }
+        
+        /// <summary>
+        /// 同步加载
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="assetPath"></param>
+        /// <returns></returns>
         public static PrefabLoader Load(GameObject gameObject, string assetPath)
         {
             var loader = gameObject.AddComponent<PrefabLoader>();
@@ -70,17 +108,28 @@ namespace UnityFS.Utils
             return loader;
         }
 
+
         public PrefabLoader DestroyAfter(float seconds)
         {
             StartCoroutine(Helpers.DestroyAfter(gameObject, seconds));
             return this;
         }
 
-        private void _Load(string assetPath)
+        private void _LoadAsync(string assetPath)
         {
-            _asset = ResourceManager.LoadAsset(assetPath);
+            _asset = ResourceManager.LoadAssetAsync(assetPath);
             _asset.completed += OnCompleted;
         }
+        
+        private void _Load(string assetPath)
+        {
+            _asset = ResourceManager.TryLoadAssetSync(assetPath);
+            if (_asset != null)
+            {
+                OnCompleted(_asset);
+            }
+        }
+
 
         private void OnCompleted(UAsset asset)
         {
