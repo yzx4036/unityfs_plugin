@@ -630,10 +630,19 @@ namespace UnityFS.Editor
             {
                 if (GUILayout.Button("Add Bundle"))
                 {
+                    var nameId = 0;
+                    if (_data.freeIdQueue.Count > 0)
+                    {
+                        nameId = _data.freeIdQueue.Dequeue();
+                    }
+                    else
+                    {
+                        nameId = ++_data.id;
+                    }
                     _data.bundles.Add(new BundleBuilderData.BundleInfo()
                     {
-                        id = ++_data.id,
-                        name = $"bundle_{_data.id}{BundleBuilderData.FileExt}",
+                        id = nameId,
+                        name = $"bundle_{nameId}{BundleBuilderData.FileExt}",
                     });
                     _treeView.Reload();
                 }

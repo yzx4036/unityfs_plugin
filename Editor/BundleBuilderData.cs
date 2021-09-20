@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace UnityFS.Editor
 {
@@ -51,6 +52,7 @@ namespace UnityFS.Editor
         }
 
         public int id;
+        public Queue<int> freeIdQueue = new Queue<int>();
         public int build; // 版本 (打包次数)
         public string encryptionKey;
         public int chunkSize = 4096;

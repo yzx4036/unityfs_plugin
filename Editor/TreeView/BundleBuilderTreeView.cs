@@ -28,7 +28,8 @@ namespace UnityFS.Editor
         {
         }
 
-        public BundleBuilderTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader) : base(state, multiColumnHeader)
+        public BundleBuilderTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader) : base(state,
+            multiColumnHeader)
         {
             rowHeight = kRowHeights;
             columnIndexForTreeFoldouts = 1;
@@ -84,7 +85,7 @@ namespace UnityFS.Editor
                 new MultiColumnHeaderState.Column
                 {
                     headerContent = new GUIContent("StreamingAssets?/Load/Filter"),
-                    contextMenuText = "Option", 
+                    contextMenuText = "Option",
                     headerTextAlignment = TextAlignment.Left,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Left,
@@ -170,10 +171,12 @@ namespace UnityFS.Editor
 
                 SetupParentsAndChildrenFromDepths(root, rows);
             }
+
             return rows;
         }
 
-        protected void AddChildrenRecursive(List<TreeViewItem> rows, BundleBuilderData.BundleInfo bundleInfo, BundleBuilderTreeViewBundle node)
+        protected void AddChildrenRecursive(List<TreeViewItem> rows, BundleBuilderData.BundleInfo bundleInfo,
+            BundleBuilderTreeViewBundle node)
         {
             foreach (var target in bundleInfo.targets)
             {
@@ -191,6 +194,7 @@ namespace UnityFS.Editor
                 {
                     name = targetPath;
                 }
+
                 var tv = new BundleBuilderTreeViewTarget(target.id, 1, name, target);
                 rows.Add(tv);
                 if (IsExpanded(tv.id))
@@ -349,11 +353,29 @@ namespace UnityFS.Editor
             }
             else
             {
-                if (EditorUtility.DisplayDialog("删除", $"确定删除选中的 {bundlePending.Count} 个整资源包以及 {targetPending.Count} 项资源?", "删除", "取消"))
+                if (EditorUtility.DisplayDialog("删除",
+                    $"确定删除选中的 {bundlePending.Count} 个整资源包以及 {targetPending.Count} 项资源?", "删除", "取消"))
                 {
                     foreach (var bundle in bundlePending)
                     {
                         _data.bundles.Remove(bundle);
+                        if (_data.bundles.Count > 0)
+                        {
+                            var idStr = bundle.name.Replace(".pkg", "").Split('_')[1];
+                            var nameId = 0;
+                            if (int.TryParse(idStr, out nameId))
+                            {
+                                if (!_data.freeIdQueue.Contains(nameId))
+                                {
+                                    _data.freeIdQueue.Enqueue(nameId);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            _data.freeIdQueue.Clear();
+                            _data.id = 0;
+                        }
                     }
 
                     foreach (var bundle in _data.bundles)
@@ -390,6 +412,7 @@ namespace UnityFS.Editor
                             GUI.DrawTexture(cellRect, kIconZipArchive, ScaleMode.ScaleToFit);
                         }
                     }
+
                     break;
                 case 1:
                     // Do toggle
@@ -401,6 +424,7 @@ namespace UnityFS.Editor
                     {
                         item.enabled = EditorGUI.Toggle(toggleRect, item.enabled); // hide when outside cell rect
                     }
+
                     // Default icon and label
                     args.rowRect = cellRect;
                     cellRect.xMin += indent + kToggleWidth + 2f;
@@ -413,7 +437,8 @@ namespace UnityFS.Editor
                         }
                         else
                         {
-                            EditorGUI.LabelField(cellRect, string.Format("{0} ({1})", bundleInfo.note, bundleInfo.name));
+                            EditorGUI.LabelField(cellRect,
+                                string.Format("{0} ({1})", bundleInfo.note, bundleInfo.name));
                         }
                     }
                     else if (item.depth == 1)
@@ -422,10 +447,13 @@ namespace UnityFS.Editor
                         if (target.targetPath.StartsWith("Assets/"))
                         {
                             var assetObject = AssetDatabase.LoadMainAssetAtPath(target.targetPath);
-                            var newAssetObject = EditorGUI.ObjectField(cellRect, GUIContent.none, assetObject, typeof(Object), false);
+                            var newAssetObject = EditorGUI.ObjectField(cellRect, GUIContent.none, assetObject,
+                                typeof(Object), false);
                             if (newAssetObject != assetObject)
                             {
-                                target.targetPath = newAssetObject != null ? AssetDatabase.GetAssetPath(newAssetObject) : string.Empty;
+                                target.targetPath = newAssetObject != null
+                                    ? AssetDatabase.GetAssetPath(newAssetObject)
+                                    : string.Empty;
                                 _data.MarkAsDirty();
                             }
                         }
@@ -451,6 +479,7 @@ namespace UnityFS.Editor
                                 GUI.color = Color.red;
                                 GUI.Label(cellRect, "<Not Supported>");
                             }
+
                             GUI.color = oldColor;
                         }
                     }
@@ -458,6 +487,7 @@ namespace UnityFS.Editor
                     {
                         base.RowGUI(args);
                     }
+
                     break;
                 case 2:
                     if (item.depth == 1)
@@ -471,6 +501,7 @@ namespace UnityFS.Editor
                             _data.MarkAsDirty();
                         }
                     }
+
                     break;
                 case 3:
                     if (item.depth == 0)
@@ -484,6 +515,7 @@ namespace UnityFS.Editor
                             bundleInfo.streamingAssets = streamingAssets;
                             _data.MarkAsDirty();
                         }
+
                         cellRect.x += cellRect.width;
                         cellRect.width = popupWidth;
                         var load = (Manifest.BundleLoad)EditorGUI.EnumPopup(cellRect, bundleInfo.load);
@@ -492,6 +524,7 @@ namespace UnityFS.Editor
                             bundleInfo.load = load;
                             _data.MarkAsDirty();
                         }
+
                         cellRect.x += cellRect.width;
                         cellRect.width = popupWidth;
                         var type = (Manifest.BundleType)EditorGUI.EnumPopup(cellRect, bundleInfo.type);
@@ -505,6 +538,7 @@ namespace UnityFS.Editor
                     else if (item.depth == 1)
                     {
                     }
+
                     break;
                 case 4:
                     if (item.depth == 0)
@@ -520,6 +554,7 @@ namespace UnityFS.Editor
                     else if (item.depth == 1)
                     {
                     }
+
                     break;
                 case 5:
                     if (item.depth == 0)
@@ -532,6 +567,7 @@ namespace UnityFS.Editor
                             _data.MarkAsDirty();
                         }
                     }
+
                     break;
             }
         }
@@ -552,6 +588,7 @@ namespace UnityFS.Editor
             {
                 return DragAndDropVisualMode.None;
             }
+
             if (args.performDrop)
             {
                 var draggedObjects = DragAndDrop.objectReferences;
@@ -562,6 +599,7 @@ namespace UnityFS.Editor
                     Reload();
                 }
             }
+
             return DragAndDropVisualMode.Move;
         }
     }
