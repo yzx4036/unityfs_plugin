@@ -6,6 +6,7 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Zip.Compression;
+using JetBrains.Annotations;
 
 namespace UnityFS.Editor
 {
@@ -643,6 +644,33 @@ namespace UnityFS.Editor
 
             return null;
         }
+        
+        public static List<BundleBuilderData.BundleInfo> GetBundleInfoByTag(string tagName)
+        {
+            List<BundleBuilderData.BundleInfo> list = new List<BundleBuilderData.BundleInfo>();
+            foreach (var bundle in GetData().bundles)
+            {
+                if (bundle.tag == tagName)
+                {
+                    list.Add(bundle);
+                }
+            }
+
+            return list;
+        }
+        
+        public static BundleBuilderData.BundleInfo GetBundleInfoByInfo(string info)
+        {
+            foreach (var bundle in GetData().bundles)
+            {
+                if (bundle.note == info)
+                {
+                    return bundle;
+                }
+            }
+
+            return null;
+        }
 
         // 获取指定包名的包对象信息
         public static bool TryGetBundleSlice(BundleBuilderData data, string bundleName,
@@ -1025,7 +1053,7 @@ namespace UnityFS.Editor
             return nameId;
         }
 
-        public static void AddOneBundle(BundleBuilderData.BundleAssetTarget target)
+        public static void AddOneBundle(string targetPath, string des, string tag = default)
         {
             var nameId = GetFreeBundleNameId();
         
@@ -1033,9 +1061,20 @@ namespace UnityFS.Editor
             {
                 id = nameId,
                 name = $"bundle_{nameId}{BundleBuilderData.FileExt}",
+                note = des,
+                tag = tag,
             };
-            bInfo.targets.Add(target);
+            AddOneTargetToBundle(bInfo, targetPath);
             GetData().bundles.Add(bInfo);
+        }
+        
+        public static void AddOneTargetToBundle(BundleBuilderData.BundleInfo bundle, string targetPath)
+        {
+            bundle.targets.Add(new BundleBuilderData.BundleAssetTarget()
+            {
+                enabled = true,
+                targetPath = targetPath,
+            });
         }
     }
 }
