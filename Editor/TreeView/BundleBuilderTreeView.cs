@@ -332,6 +332,10 @@ namespace UnityFS.Editor
                 if (this.IsSelected(bundle.id))
                 {
                     bundlePending.Add(bundle);
+                    foreach (var target in bundle.targets)
+                    {
+                        targetPending.Add(target);
+                    }
                 }
                 else
                 {
@@ -356,6 +360,18 @@ namespace UnityFS.Editor
                 if (EditorUtility.DisplayDialog("删除",
                     $"确定删除选中的 {bundlePending.Count} 个整资源包以及 {targetPending.Count} 项资源?", "删除", "取消"))
                 {
+                    foreach (var bundle in _data.bundles)
+                    {
+                        foreach (var target in targetPending)
+                        {
+                            if (target.id > 0 && !_data.freeIdQueue.Contains(target.id))
+                            {
+                                _data.freeIdQueue.Enqueue(target.id);
+                            }
+                            bundle.targets.Remove(target);
+                        }
+                    }
+                    
                     foreach (var bundle in bundlePending)
                     {
                         _data.bundles.Remove(bundle);
@@ -378,13 +394,7 @@ namespace UnityFS.Editor
                         }
                     }
 
-                    foreach (var bundle in _data.bundles)
-                    {
-                        foreach (var target in targetPending)
-                        {
-                            bundle.targets.Remove(target);
-                        }
-                    }
+                    
 
                     _data.MarkAsDirty();
                     this.Reload();

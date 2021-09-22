@@ -17,6 +17,7 @@ namespace UnityFS.Editor
         [Serializable]
         public class BundleAssetTarget
         {
+
             public int id;
             public bool enabled = true;
 
@@ -25,6 +26,10 @@ namespace UnityFS.Editor
             public PackagePlatform platform; // 在特定平台中生效
             // public BundleAssetTypes types = (BundleAssetTypes)~0; // (仅搜索目录时) 仅包含指定资源类型
             // public List<string> extensions = new List<string>();  // (仅搜索目录时) 额外包含指定后缀的文件
+            public BundleAssetTarget()
+            {
+                id = BundleBuilder.GetFreeBundleNameId();
+            }
 
             public bool IsBuildPlatform(PackagePlatform buildPlatform)
             {

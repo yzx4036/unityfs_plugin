@@ -22,7 +22,7 @@ namespace UnityFS.Editor
             {
                 if (bundle.id == 0)
                 {
-                    bundle.id = ++data.id;
+                    bundle.id = GetFreeBundleNameId();
                     dirty = true;
                 }
 
@@ -30,7 +30,7 @@ namespace UnityFS.Editor
                 {
                     if (target.id == 0)
                     {
-                        target.id = ++data.id;
+                        target.id = GetFreeBundleNameId();
                         dirty = true;
                     }
                 }
@@ -997,15 +997,45 @@ namespace UnityFS.Editor
                 var targetPath = AssetDatabase.GetAssetPath(targetObject);
                 if (!ContainsTarget(bundleInfo, targetPath))
                 {
+                    
                     bundleInfo.targets.Add(new BundleBuilderData.BundleAssetTarget()
                     {
-                        id = ++data.id,
                         targetPath = targetPath,
                     });
                 }
             }
 
             data.MarkAsDirty();
+        }
+
+        public static int GetFreeBundleNameId()
+        {
+            var nameId = 0;
+
+            var data = BundleBuilderData.Load();
+            if (data.freeIdQueue.Count > 0)
+            {
+                nameId = data.freeIdQueue.Dequeue();
+            }
+            else
+            {
+                nameId = ++data.id;
+            }
+
+            return nameId;
+        }
+
+        public static void AddOneBundle(BundleBuilderData.BundleAssetTarget target)
+        {
+            var nameId = GetFreeBundleNameId();
+        
+            var bInfo = new BundleBuilderData.BundleInfo()
+            {
+                id = nameId,
+                name = $"bundle_{nameId}{BundleBuilderData.FileExt}",
+            };
+            bInfo.targets.Add(target);
+            GetData().bundles.Add(bInfo);
         }
     }
 }
