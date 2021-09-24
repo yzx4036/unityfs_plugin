@@ -18,13 +18,13 @@ namespace UnityFS.Editor
         [Serializable]
         public class BundleAssetTarget
         {
-            private int _id;
+            public int _id;
             public int id {
                 get {
                     if (_id == 0)
                     {
                         _id = BundleBuilder.GetFreeBundleNameId();
-                    };
+                    }
                     return _id;
                 }
                 set
