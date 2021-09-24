@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine.Serialization;
 
 namespace UnityFS.Editor
@@ -17,8 +18,21 @@ namespace UnityFS.Editor
         [Serializable]
         public class BundleAssetTarget
         {
-
-            public int id;
+            private int _id;
+            public int id {
+                get {
+                    if (_id == 0)
+                    {
+                        _id = BundleBuilder.GetFreeBundleNameId();
+                    };
+                    return _id;
+                }
+                set
+                {
+                    _id = value;
+                }
+            }
+            
             public bool enabled = true;
 
             public string targetPath;
@@ -28,7 +42,7 @@ namespace UnityFS.Editor
             // public List<string> extensions = new List<string>();  // (仅搜索目录时) 额外包含指定后缀的文件
             public BundleAssetTarget()
             {
-                id = BundleBuilder.GetFreeBundleNameId();
+                _id = 0;
             }
 
             public bool IsBuildPlatform(PackagePlatform buildPlatform)
@@ -57,7 +71,7 @@ namespace UnityFS.Editor
         }
 
         public int id;
-        public Queue<int> freeIdQueue = new Queue<int>();
+        public List<int> freeIdList = new List<int>();
         public int build; // 版本 (打包次数)
         public string encryptionKey;
         public int chunkSize = 4096;
@@ -111,6 +125,24 @@ namespace UnityFS.Editor
         }
 
         public SList skipExts = new SList(".xlsx", ".xlsm", ".xls", ".docx", ".doc", ".cs");
+
+        public void AddId2Free(int id)
+        {
+            freeIdList.Add(id);
+            freeIdList.Sort();
+        }
+        
+        public int GetAndRemoveIdFromFree()
+        {
+            if (freeIdList.Count > 0)
+            {
+                int freeId = freeIdList[0];
+                freeIdList.RemoveAt(0);
+                return freeId;
+            }
+
+            return -1;
+        }
 
         public static BundleBuilderData Load()
         {

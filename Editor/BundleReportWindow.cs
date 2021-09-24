@@ -193,7 +193,8 @@ namespace UnityFS.Editor
                             if (EditorUtility.DisplayDialog("删除", $"确定删除资源项?", "确定", "取消"))
                             {
                                 Defer(() => bundle.targets.Remove(target));
-                                _data.freeIdQueue.Enqueue(target.id);
+                                
+                                _data.AddId2Free(target.id);
                             }
                         }
 

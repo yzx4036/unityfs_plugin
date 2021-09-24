@@ -364,9 +364,9 @@ namespace UnityFS.Editor
                     {
                         foreach (var target in targetPending)
                         {
-                            if (target.id > 0 && !_data.freeIdQueue.Contains(target.id))
+                            if (target.id > 0 && !_data.freeIdList.Contains(target.id))
                             {
-                                _data.freeIdQueue.Enqueue(target.id);
+                                _data.AddId2Free(target.id);
                             }
                             bundle.targets.Remove(target);
                         }
@@ -377,19 +377,19 @@ namespace UnityFS.Editor
                         _data.bundles.Remove(bundle);
                         if (_data.bundles.Count > 0)
                         {
-                            var idStr = bundle.name.Replace(".pkg", "").Split('_')[1];
-                            var nameId = 0;
-                            if (int.TryParse(idStr, out nameId))
+                            var nameId = bundle.id;
+
+                            if (nameId > 0)
                             {
-                                if (!_data.freeIdQueue.Contains(nameId))
+                                if (!_data.freeIdList.Contains(nameId))
                                 {
-                                    _data.freeIdQueue.Enqueue(nameId);
+                                    _data.AddId2Free(nameId);
                                 }
                             }
                         }
                         else
                         {
-                            _data.freeIdQueue.Clear();
+                            _data.freeIdList.Clear();
                             _data.id = 0;
                         }
                     }

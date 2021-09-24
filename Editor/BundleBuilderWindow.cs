@@ -65,7 +65,7 @@ namespace UnityFS.Editor
         {
             base.OnEnable();
             Selection.selectionChanged += OnSelectionChanged;
-            _data = BundleBuilder.GetData();
+            _data = BundleBuilder.GetData(true);
             BundleBuilder.Scan(_data);
             titleContent = new GUIContent("Bundle Builder");
             _searchKeyword = EditorPrefs.GetString(KeyForSearchKey);

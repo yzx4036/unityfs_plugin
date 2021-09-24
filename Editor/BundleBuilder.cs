@@ -15,11 +15,13 @@ namespace UnityFS.Editor
 
     public partial class BundleBuilder
     {
-        public static BundleBuilderData GetData()
+        private static BundleBuilderData _data;
+        public static BundleBuilderData LoadData()
         {
-            var data = BundleBuilderData.Load();
+            _data = BundleBuilderData.Load();
+            int a;
             var dirty = false;
-            foreach (var bundle in data.bundles)
+            foreach (var bundle in _data.bundles)
             {
                 if (bundle.id == 0)
                 {
@@ -39,10 +41,19 @@ namespace UnityFS.Editor
 
             if (dirty)
             {
-                data.MarkAsDirty();
+                _data.MarkAsDirty();
             }
 
-            return data;
+            return _data;
+        }
+        
+        public static BundleBuilderData GetData(bool isForce = false)
+        {
+            if (_data == null || isForce)
+            {
+                LoadData();
+            }
+            return _data;
         }
 
         public static void BuildPackages(BundleBuilderData data, string outputPath, PackagePlatform platform)
@@ -1040,10 +1051,10 @@ namespace UnityFS.Editor
         {
             var nameId = 0;
 
-            var data = BundleBuilderData.Load();
-            if (data.freeIdQueue.Count > 0)
+            var data = BundleBuilder.GetData();
+            if (data.freeIdList.Count > 0)
             {
-                nameId = data.freeIdQueue.Dequeue();
+                nameId = data.GetAndRemoveIdFromFree();
             }
             else
             {
@@ -1053,14 +1064,14 @@ namespace UnityFS.Editor
             return nameId;
         }
 
-        public static void AddOneBundle(string targetPath, string des, string tag = default)
+        public static void AddOneBundle(string targetPath, string des, bool isIdName = true, string tag = "")
         {
             var nameId = GetFreeBundleNameId();
         
             var bInfo = new BundleBuilderData.BundleInfo()
             {
                 id = nameId,
-                name = $"bundle_{nameId}{BundleBuilderData.FileExt}",
+                name = isIdName || string.IsNullOrEmpty(tag) ? $"bundle_{nameId}{BundleBuilderData.FileExt}" : $"bundle_{des}{BundleBuilderData.FileExt}",
                 note = des,
                 tag = tag,
             };

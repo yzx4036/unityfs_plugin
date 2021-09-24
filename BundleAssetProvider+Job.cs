@@ -202,7 +202,7 @@ namespace UnityFS
             }
             catch (Exception exception)
             {
-                Debug.LogWarningFormat("下载完成任务回调通知异常 {0}", exception);
+                Debug.LogWarningFormat("下载完成任务回调通知异常 {0}", exception.StackTrace);
             }
 
             var bundle = TryGetBundle(jobInfo.name);
