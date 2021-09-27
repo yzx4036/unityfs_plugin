@@ -255,43 +255,21 @@ namespace UnityFS
             return GetAssetProvider().IsAssetExists(assetPath);
         }
 
-        public static UAsset LoadAssetAsync(string assetPath, Action<UAsset> callback)
+        public static UAsset LoadAssetAsync(string assetPath, Type type, Action<UAsset> callback)
         {
-            var asset = GetAssetProvider().GetAsset(assetPath, null, EAssetHints.None);
+            var asset = GetAssetProvider().GetAsset(assetPath, type, EAssetHints.None);
             if (callback != null)
             {
                 asset.completed += callback;
             }
-
+        
             return asset;
         }
 
-        public static UAsset LoadAssetAsync<T>(string assetPath, Action<UAsset> callback) where T:UnityEngine.Object
-        {
-            var asset = GetAssetProvider().GetAsset(assetPath, typeof(T), EAssetHints.None);
-            if (callback != null)
-            {
-                asset.completed += callback;
-            }
-
-            return asset;
-        }
-
-        public static UAsset TryLoadAssetSync(string assetPath, Action<UAsset> callback)
-        {
-            var asset = GetAssetProvider().GetAsset(assetPath, null, EAssetHints.Synchronized);
-            if (callback != null)
-            {
-                asset.completed += callback;
-            }
-
-            return asset;
-        }
-
-        public static UAsset TryLoadAssetSync<T>(string assetPath, Action<UAsset> callback)
+        public static UAsset TryLoadAssetSync(string assetPath, Type type, Action<UAsset> callback)
         {
             Debug.Log($"TryLoadAssetSync path: {assetPath}");
-            var asset = GetAssetProvider().GetAsset(assetPath, typeof(T), EAssetHints.Synchronized);
+            var asset = GetAssetProvider().GetAsset(assetPath, type, EAssetHints.Synchronized);
             if (callback != null)
             {
                 asset.completed += callback;

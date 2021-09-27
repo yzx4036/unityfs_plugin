@@ -117,13 +117,13 @@ namespace UnityFS.Utils
 
         private void _LoadAsync(string assetPath)
         {
-            _asset = ResourceManager.LoadAssetAsync(assetPath, null);
+            _asset = ResourceManager.LoadAssetAsync(assetPath, typeof(UnityEngine.Object), null);
             _asset.completed += OnCompleted;
         }
         
         private void _Load(string assetPath)
         {
-            _asset = ResourceManager.TryLoadAssetSync(assetPath, null);
+            _asset = ResourceManager.TryLoadAssetSync(assetPath, typeof(UnityEngine.Object), null);
             if (_asset != null)
             {
                 OnCompleted(_asset);
