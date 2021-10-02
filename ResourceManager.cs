@@ -268,7 +268,7 @@ namespace UnityFS
 
         public static UAsset TryLoadAssetSync(string assetPath, Type type, Action<UAsset> callback)
         {
-            Debug.Log($"TryLoadAssetSync path: {assetPath}");
+            // Debug.Log($"TryLoadAssetSync path: {assetPath}");
             var asset = GetAssetProvider().GetAsset(assetPath, type, EAssetHints.Synchronized);
             if (callback != null)
             {
